@@ -6,6 +6,12 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+old_for_reference
+data
+model
+tests
+out
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
