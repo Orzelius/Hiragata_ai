@@ -18,8 +18,8 @@
         "typescript": "^3.9.7"
     },
     "dependencies": {
-        "@tensorflow/tfjs-node": "^2.7.0",
-        "@tensorflow/tfjs-node-gpu": "^2.3.0",
+        "@tensorflow/tfjs-node": "^3.3.0",
+        "@tensorflow/tfjs-node-gpu": "^3.3.0",
         "@types/concat-stream": "^1.6.0",
         "@types/pngjs": "^3.4.2",
         "async": "^3.2.0",

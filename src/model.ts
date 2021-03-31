@@ -111,7 +111,7 @@ const train = async () => {
 
   // We'll keep a buffer of loss and accuracy values over time.
   let trainBatchCount = 0;
-  let trainEpochs = 20;
+  let trainEpochs = 10;
 
   const trainData = data.getTrainData();
   const testData = data.getTestData();
@@ -151,7 +151,7 @@ const train = async () => {
 
   const testResult = model.evaluate(testData.xs, testData.labels);
 
-  console.log(`Test result: ${testResult}`);
+  console.log(`Test result: ${testResult}`); 
 }
 const makeModel = async () => {
   // createModel();
