@@ -1,5 +1,7 @@
 # Hiragata_ai
 
+Currently this repo is quite usless due to it having no data, which exist only locally on my pc
+
 ## Dev guide
 ### Warning, getting this to run requires a lot of time and hastle
 
