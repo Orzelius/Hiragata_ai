@@ -46,10 +46,14 @@ const classes = [
   { lat: 'wo', hir: 'を', kat: 'ヲ' },
   { lat: 'n', hir: 'ん', kat: 'ン' }
 ]
-export const PROPS = {
-  W: 50,
-  H: 50,
-  Size: 2500,
+const props = {
+  W: 48,
+  H: 48,
+  Size: 0,
   NumClasses: classes.length,
-  classes
+  classes,
 }
+
+props.Size = props.W * props.H;
+
+export const PROPS = {...props};

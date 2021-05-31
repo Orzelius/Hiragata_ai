@@ -1,23 +1,27 @@
-import fs from 'graceful-fs';
+import * as fs from 'fs';
 import { PROPS } from '../const';
 import { PNG } from 'pngjs';
 import { printProgress, shuffle } from '../utils';
 import async from 'async';
 
+
+
 export default async () => {
   return new Promise((resolve, reject) => {
     console.log("Creating Binaries");
   
-    const fileLimit = { limit: false, limitLen: 1000 };
+    const useFileLimit = false;
+    const fileLimit = { limitLen: 50000, takeLast: true };
     let count = 0;
     
-    const origin = './data/data/katakana/';
-    const dest = './data/data/';
+    const origin = './data/data/katakanaTestData_48/';
+    const dest = './data/data/bin_48/';
     fs.readdir(origin, (err, files) => {
-      const maxFiles = fileLimit.limit ? fileLimit.limitLen : files.length;
+      const maxFiles = useFileLimit ? fileLimit.limitLen : files.length;
       const datasetBytesBuffer = new ArrayBuffer(maxFiles * PROPS.Size);
       const labels = new Uint8Array(maxFiles);
-      files = shuffle(files);
+      // files = shuffle(files);
+      if (useFileLimit && fileLimit.takeLast) files = files.slice(files.length - fileLimit.limitLen);
       console.log(files);
   
       const queue = async.queue(({ file, fileIndex }: { file: string, fileIndex: number }, cb) => {
@@ -30,11 +34,15 @@ export default async () => {
           count++;
           cb();
           if (count === maxFiles) {
-            console.log();
-            fs.writeFileSync(dest + 'katakanaUint8', new Uint8Array(datasetBytesBuffer));
-            fs.writeFileSync(dest + 'katakanaLabelsUint8', labels);
+            console.log("\nAttempting to write binary");
+            const views = datasetBytesBuffer.byteLength / PROPS.Size;
+            for (let i = 0; i < views; i++) {
+              const datasetBytesView = new Uint8Array(datasetBytesBuffer, i * PROPS.Size, PROPS.Size);
+              fs.appendFileSync(dest + 'katakanaTestUint8', Buffer.from(datasetBytesView));
+            }
+            fs.writeFileSync(dest + 'katakanaTestLabelsUint8', labels);
             console.log("Binary written");
-            resolve()
+            resolve(null)
           }
         });
         fs.createReadStream(origin + file).pipe(img);

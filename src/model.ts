@@ -1,16 +1,15 @@
 const { performance } = require('perf_hooks');
 // const tf = require('@tensorflow/tfjs-node-gpu');
 import * as tf from '@tensorflow/tfjs-node-gpu';
+const mobilenet = require('@tensorflow-models/mobilenet');
 
 import { PROPS } from './const';
-import MnistData from './data/loadData';
+import DataGen from './data/loadData';
 import generateImages from './data/generateImages';
-// Optional Load the binding:
-// Use '@tensorflow/tfjs-node-gpu' if running with GPU.
+// import { train } from '@tensorflow/tfjs-node-gpu';
 
-// Train a simple model:
 const createModel = () => {
-  const model = tf.sequential();
+  // const model = tf.sequential();
   // Custom 1
   // model.add(tf.layers.conv2d({
   //   inputShape: [50, 50, 1],
@@ -48,43 +47,26 @@ const createModel = () => {
   // }));
 
 
-  // TFJS examples mnist-node
-  model.add(tf.layers.conv2d({
-    inputShape: [50, 50, 1],
-    filters: 32,
-    kernelSize: 10,
-    activation: 'relu',
-  }));
-  model.add(tf.layers.conv2d({
-    filters: 32,
-    kernelSize: 10,
-    activation: 'relu',
-  }));
-  model.add(tf.layers.maxPooling2d({poolSize: [2, 2]}));
-  model.add(tf.layers.conv2d({
-    filters: 64,
-    kernelSize: 3,
-    activation: 'relu',
-  }));
-  model.add(tf.layers.conv2d({
-    filters: 64,
-    kernelSize: 3,
-    activation: 'relu',
-  }));
-  model.add(tf.layers.maxPooling2d({poolSize: [2, 2]}));
+  // https://github.com/Nippon2019/Handwritten-Japanese-Recognition/blob/master/Katakana/katakana_CNN.py
+  const model = tf.sequential()
+  model.add(tf.layers.conv2d({ inputShape: [48, 48, 1], kernelSize: [3, 3], filters: 32, activation: 'relu', }));
+  model.add(tf.layers.maxPooling2d({ poolSize: [2, 2], }));
+  model.add(tf.layers.conv2d({ kernelSize: [3, 3], filters: 64, activation: 'relu', }));
+  model.add(tf.layers.maxPooling2d({ poolSize: [2, 2], }));
+  model.add(tf.layers.conv2d({ kernelSize: [3, 3], filters: 64, activation: 'relu', }));
+  model.add(tf.layers.maxPooling2d({ poolSize: [2, 2], }));
   model.add(tf.layers.flatten());
-  model.add(tf.layers.dropout({rate: 0.25}));
-  model.add(tf.layers.dense({units: 512, activation: 'relu'}));
-  model.add(tf.layers.dropout({rate: 0.5}));
-  model.add(tf.layers.dense({units: PROPS.NumClasses, activation: 'softmax'}));
+  model.add(tf.layers.dropout({ rate: 0.5, }));
+  model.add(tf.layers.dense({ activation: 'relu', units: 512, }));
+  model.add(tf.layers.dense({ activation: 'softmax', units: PROPS.NumClasses }));
 
   model.summary()
-  
+  console.log(JSON.stringify(model.outputs[0].shape));
   console.log('Layers created');
 
   model.compile({
-    optimizer: 'rmsprop',
-    loss: 'categoricalCrossentropy',
+    optimizer: 'adam',
+    loss: 'sparseCategoricalCrossentropy',
     metrics: ['accuracy'],
   });
   console.log('Model compiled');
@@ -94,7 +76,7 @@ const createModel = () => {
 
 const model = createModel();
 
-let data = new MnistData();
+let data = new DataGen(false);
 
 
 const train = async () => {
@@ -103,7 +85,7 @@ const train = async () => {
   // weights during training. A value that is too low will update weights using
   // too few examples and will not generalize well. Larger batch sizes require
   // more memory resources and aren't guaranteed to perform better.
-  const batchSize = 100;
+  const batchSize = 200;
 
   // Leave out the last 15% of the training data for validation, to monitor
   // overfitting during training.
@@ -111,10 +93,13 @@ const train = async () => {
 
   // We'll keep a buffer of loss and accuracy values over time.
   let trainBatchCount = 0;
-  let trainEpochs = 10;
+  let trainEpochs = 15;
 
-  const trainData = data.getTrainData();
-  const testData = data.getTestData();
+  let trainData = data.getTrainData();
+  let testData = data.getTestData();
+
+  console.log("The data tensor: ", trainData.xs.shape)
+  console.log("The label tensor: ", trainData.labels.shape)
 
   // const trainData = data.getTrainDataset();
   // const testData = data.getTestData();
@@ -124,9 +109,11 @@ const train = async () => {
   // During the long-running fit() call for model training, we include
   // callbacks, so that we can plot the loss and accuracy values in the page
   // as the training progresses.
+  console.log("Model training started");
   let valAcc = 0;
   await model.fit(trainData.xs, trainData.labels, {
     epochs: trainEpochs,
+    validationSplit,
     // batchSize,
     // validationSplit,
     callbacks: {
@@ -148,14 +135,28 @@ const train = async () => {
       }
     }
   });
+  console.log("Model training finished");
 
   const testResult = model.evaluate(testData.xs, testData.labels);
 
-  console.log(`Test result: ${testResult}`); 
+  console.log(`Test result: ${testResult}`);
 }
-const makeModel = async () => {
-  // createModel();
 
+export const testModel = async (amount: number, path: string = 'file://./model/model.json') => {
+  await data.load();
+  const testData = data.getTestData();
+  const model = await tf.loadLayersModel(path);
+  const testResult: any = model.predict(testData.xs.slice(0, amount));
+  const predictions = Array.from(testResult.argMax(1).dataSync());
+  const labels = Array.from(testData.labels.slice(0, amount).argMax(1).dataSync());
+  console.log(`Test result: ${predictions}`);
+  console.log(`Labels: ${labels}`);
+  let correct = 0;
+  labels.forEach((l, i) => l === predictions[i] && correct++)
+  console.log(`\n acc: ${correct / labels.length * 100}%`);
+}
+
+const makeModel = async () => {
   console.log("Loading data...");
   await data.load()
     .then(async () => {

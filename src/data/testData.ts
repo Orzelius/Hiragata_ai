@@ -3,17 +3,17 @@ import path from 'path';
 import { PNG } from 'pngjs';
 import { PROPS } from '../const';
 
-const originImg = './data/data/katakanaUint8';
-const originLabel = './data/data/katakanaLabelsUint8';
+const originImg = './data/data/bin_48/katakanaTestUint8';
+const originLabel = './data/data/bin_48/katakanaTestLabelsUint8';
 // const originImg = './data/data/hiraganaUint8';
 // const originLabel = './data/data/hiraganaLabelsUint8';
-const dest = './tests';
+const dest = './test-images';
 
 export default async () => {
   console.log("Creating test data");
   
   deleteFiles(dest);
-  const imagesTotest = [0, 1, 40, 50, 240, 300];
+  const imagesTotest = [0, 1, 40, 50, 240, 300, 458];
   // const imagesTotest = [0, 1, 22, 498, 499, 500, 501, 999, 1000, 9999, 64998, 64999];
   // await createImages('mnist_images.png', imagesTotest, '_Original');
   await createImages(imagesTotest);
@@ -25,7 +25,7 @@ export const createImages = async (imagesTotest: number[], addToName = "") => {
   const imgData = await dataRequest(originImg);
   const labelData = await dataRequest(originLabel);
 
-  console.log(labelData)
+  console.log(labelData, imgData.length)
 
   imagesTotest.forEach(id => {
     const testPng = new PNG({
@@ -47,7 +47,7 @@ export const createImages = async (imagesTotest: number[], addToName = "") => {
     }
     testPng
       .pack()
-      .pipe(fs.createWriteStream(`./test-images/id-${id}_label-${PROPS.classes[labelData[id]].kat + PROPS.classes[labelData[id]].hir}${addToName}.png`));
+      .pipe(fs.createWriteStream(`./${dest}/id-${id}_label-${PROPS.classes[labelData[id]].kat + PROPS.classes[labelData[id]].hir}${addToName}.png`));
   });
 }
 
@@ -71,7 +71,7 @@ const dataRequest = (path: string) => new Promise<Uint8Array>((resolve, reject) 
   })
 });
 
-const deleteFiles = (directory: string) => {
+export const deleteFiles = (directory: string) => {
   fs.readdir(directory, (err, files) => {
     if (err) throw err;
 

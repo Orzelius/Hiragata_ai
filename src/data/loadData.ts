@@ -1,25 +1,37 @@
 import * as tf from '@tensorflow/tfjs-node-gpu';
+import * as _ from 'lodash';
 
 import * as fs from 'graceful-fs';
 // import { image, TensorContainer } from '@tensorflow/tfjs-node-gpu';
 import { PROPS } from '../const';
 import { shuffle } from '../utils';
 
-const originImg = './data/data/katakanaUint8';
-const originLabel = './data/data/katakanaLabelsUint8';
-const originTestImg = './data/data/katakanaTestUint8';
-const originTestLabel = './data/data/katakanaTestLabelsUint8';
+const
+  originLabel     = './data/data/bin_48/katakanaLabelsUint8',
+  originImg       = './data/data/bin_48/katakanaUint8',
+  originTestImg   = './data/data/bin_48/katakanaTestUint8',
+  originTestLabel = './data/data/bin_48/katakanaTestLabelsUint8';
 
-export default class MnistData {
+export default class DataGen {
   trainImages: Float32Array;
   testImages: Float32Array;
   trainLabels: Uint8Array;
   testLabels: Uint8Array;
 
-  constructor() { }
+  brainData: {
+    trainImages: Float32Array[]
+    testImages: Float32Array[]
+  } = {trainImages: [], testImages: []}
+
+  constructor(readonly brain: boolean) { }
+
+  shuffle() {
+    tf.util.shuffleCombo(this.trainImages, this.trainLabels as unknown as any[]);
+    tf.util.shuffleCombo(this.testImages, this.testLabels as unknown as any[]);
+  }
 
   async load() {
-    const dataRequest = (path: string) => new Promise<Float32Array>((resolve, reject) => {
+    const dataRequest = (path: string) => new Promise<any>((resolve, reject) => {
       fs.readFile(path, (err, data) => {
         if (err) {
           reject(err);
@@ -27,16 +39,21 @@ export default class MnistData {
 
         const images = new Uint8Array(data);
         const imageData = new Float32Array(images.length);
-        for (let i = 0; i < images.length; i = i + 4) {
+        for (let i = 0; i < images.length; i++) {
           imageData[i] = images[i] / 255;
         }
-        console.log(images.length);
-        console.log(imageData.length);
-        resolve(imageData);
+        if (!this.brain){
+          resolve(imageData)
+          return;  
+        };
+        const imageArrays = _.chunk(imageData, PROPS.Size);
+        resolve(imageArrays)
+        // resolve(imageArrays.map(image => _.chunk(image, PROPS.W)));
+        return;
       })
     });
 
-    const labelsRequest = (path: string) => new Promise<Uint8Array>((resolve, reject) => {
+    const labelsRequest = (path: string) => new Promise<any>((resolve, reject) => {
       fs.readFile(path, (err, data) => {
         if (err) {
           reject(err);
@@ -47,8 +64,13 @@ export default class MnistData {
 
     this.trainLabels = await labelsRequest(originLabel)
     this.testLabels = await labelsRequest(originTestLabel)
-    this.trainImages = await dataRequest(originImg);
-    this.testImages = await dataRequest(originTestImg);
+    if (this.brain) {
+      this.brainData.trainImages = await dataRequest(originImg);
+      this.brainData.testImages = await dataRequest(originTestImg);
+    } else {
+      this.trainImages = await dataRequest(originImg);
+      this.testImages = await dataRequest(originTestImg);
+    }
 
     console.log("Done editing and loading images");
   }
@@ -57,33 +79,41 @@ export default class MnistData {
     const xs = tf.tensor4d(
       this.trainImages,
       [this.trainImages.length / PROPS.Size, PROPS.H, PROPS.W, 1]);
-    const labels = tf.oneHot(this.trainLabels, PROPS.NumClasses);
+    const labels = tf.oneHot(this.trainLabels, PROPS.NumClasses).toFloat();
     return { xs, labels };
   }
 
-  getTrainDataset() {
-    const xDataset = tf.data.array(this.trainImages as any);
-    const yDataset = tf.data.array(this.trainLabels as any);
-    return { xDataset, yDataset };
-  }
+  // getTrainDataset() {
+  //   const xDataset = tf.data.array(this.trainImages as any);
+  //   const yDataset = tf.data.array(this.trainLabels as any);
+  //   return { xDataset, yDataset };
+  // }
 
-  getTestDataset() {
-    const xDataset = tf.data.array(this.testImages as any);
-    const yDataset = tf.data.array(this.testLabels as any);
-    return { xDataset, yDataset };
-  }
+  // getTestDataset() {
+  //   const xDataset = tf.data.array(this.testImages as any);
+  //   const yDataset = tf.data.array(this.testLabels as any);
+  //   return { xDataset, yDataset };
+  // }
 
   getTestData(numExamples = -1) {
     let xs = tf.tensor4d(
       this.testImages,
       [this.testImages.length / PROPS.Size, PROPS.H, PROPS.W, 1]);
-    let labels = tf.oneHot(this.testLabels, PROPS.NumClasses);
+    let labels = tf.oneHot(this.testLabels, PROPS.NumClasses).toFloat();
 
     if (numExamples != -1) {
       xs = xs.slice([0, 0, 0, 0], [numExamples, PROPS.H, PROPS.W, 1]);
       labels = labels.slice([0, 0], [numExamples, PROPS.NumClasses]);
     }
     return { xs, labels };
+
+  }
+
+  getBrainData() {
+    return {
+      label: {trainLabels: this.trainLabels, testLabels: this.testLabels},
+      images: {trainImages: this.brainData.trainImages, testImages: this.brainData.testImages},
+    };
   }
 
   // static nextBatch(batchSize: number, data: tf.data.Dataset<TensorContainer>, index: number) {
