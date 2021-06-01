@@ -127,9 +127,6 @@ const readChar_ETL45 = (pos: number, rawData: Buffer) => {
     .pack()
     .pipe(fs.createWriteStream(`./tests/${pos}_${letterCode}.png`));
   return ({
-    // serialDataNumber: getNumValueFromBuffer(charData, 1, 6),
-    // serialSheetNumber: getNumValueFromBuffer(charData, 7, 12),
-    // scanDate: getNumValueFromBuffer(charData, 85, 90),
     letterCode
   })
 }
