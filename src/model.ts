@@ -49,7 +49,10 @@ const createModel = () => {
 
   // https://github.com/Nippon2019/Handwritten-Japanese-Recognition/blob/master/Katakana/katakana_CNN.py
   const model = tf.sequential()
-  model.add(tf.layers.conv2d({ inputShape: [48, 48, 1], kernelSize: [3, 3], filters: 32, activation: 'relu', }));
+  model.add(tf.layers.conv2d({
+    inputShape: [48, 48, 1],
+    kernelSize: [3, 3], filters: 32, activation: 'relu',
+  }));
   model.add(tf.layers.maxPooling2d({ poolSize: [2, 2], }));
   model.add(tf.layers.conv2d({ kernelSize: [3, 3], filters: 64, activation: 'relu', }));
   model.add(tf.layers.maxPooling2d({ poolSize: [2, 2], }));
@@ -61,8 +64,8 @@ const createModel = () => {
   model.add(tf.layers.dense({ activation: 'softmax', units: PROPS.NumClasses }));
 
   model.summary()
-  console.log(JSON.stringify(model.outputs[0].shape)); // [ 80841, 48, 48, 1 ]
-  console.log('Layers created'); // [ 80841, 46 ]
+  console.log(JSON.stringify(model.outputs[0].shape));
+  console.log('Layers created');
 
   model.compile({
     optimizer: 'adam',
