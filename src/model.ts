@@ -61,8 +61,8 @@ const createModel = () => {
   model.add(tf.layers.dense({ activation: 'softmax', units: PROPS.NumClasses }));
 
   model.summary()
-  console.log(JSON.stringify(model.outputs[0].shape));
-  console.log('Layers created');
+  console.log(JSON.stringify(model.outputs[0].shape)); // [ 80841, 48, 48, 1 ]
+  console.log('Layers created'); // [ 80841, 46 ]
 
   model.compile({
     optimizer: 'adam',

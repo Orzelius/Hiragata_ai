@@ -4,8 +4,8 @@ import DataGen from './data/loadData';
 import * as fs from 'fs';
 import _, { chunk, shuffle } from 'lodash';
 
-const iterations = 30000;
-const logPeriod = 100;
+const iterations =  100;
+const logPeriod = 1;
 
 export default (dataGen: DataGen) => {
   // data: { label: { trainLabels: Uint8Array; testLabels: Uint8Array; }; images: { trainImages: Float32Array[]; testImages: Float32Array[]; };}
@@ -26,7 +26,7 @@ export default (dataGen: DataGen) => {
     iterations,
     logPeriod,
     log: logAndEstimate,
-    learningRate: 0.1,
+    learningRate: 0.2,
     errorThresh: 0.0001
   });
   fs.writeFileSync('./ai.json', JSON.stringify(net.toJSON()));
