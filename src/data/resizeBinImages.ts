@@ -21,12 +21,9 @@ export default async () => {
           const [ cropY, cropH ] = Math.random() > 0.5 ? [cropFactorY, 50 - cropFactorY] : [0, 50 - cropFactorY];
           img.crop(cropX, cropY, cropW, cropH);
         }
-        // img.scale(Math.random() * 0.2);
         img.resize(PROPS.W, PROPS.H);
         // img.invert();
-        // let fileName = wanakana.toKatakana(file.slice(0, file.indexOf('_') + 1)) + `_${20000 + index}.png`;
         let fileName = file;
-        // console.log(fileName);
         img.write(dest + fileName, cb);
       })
     }
