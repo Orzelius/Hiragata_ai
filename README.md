@@ -7,7 +7,8 @@ The AI model that is used in [hiragata.com](https://hiragata.com/).
 ### I want to work with the data only (no model training)
 1. Clone the repo
 2. Change working directory to the repo root (`cd Hiragata_ai`)
-3. 
+3. Download some model-ready data from [Google Drive](https://drive.google.com/file/d/13nL7qlIiph2Ok4lOz5mcxD5KC__8jozf/view?usp=sharing)
+4. Extract data to `data/bin/`
 
 Reguirements:
 The hardware and software requirements are the same as regular tensorflow. You can use [this](https://www.tensorflow.org/install/gpu#hardware_requirements) quide to get deps working.
