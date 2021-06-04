@@ -19,6 +19,8 @@ The AI model that is used in [hiragata.com](https://hiragata.com/).
 
 NOTE: everything will work with the js-node version of tfjs, but if you want to greatly accelerate the learning you could try to get the GPU stuff working
 
+#### How to get tfjs-gpu to work
+
 Reguirements:
 The hardware and software requirements are the same as regular tensorflow. You can use [this](https://www.tensorflow.org/install/gpu#hardware_requirements) quide to get deps working.
 | Name | Version |
