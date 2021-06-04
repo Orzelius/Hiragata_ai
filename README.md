@@ -2,6 +2,8 @@
 
 The AI model that is used in [hiragata.com](https://hiragata.com/).
 
+**This repo is part of the Hiragata project**
+
 ## Dev guide
 
 ### I want to work with the data only (no model training)
@@ -37,5 +39,5 @@ if you get gpu allocation err try running
 
 ## Data
 
-The source data is under `data/source`
+TODO: document this section
 The model-ready data can be found from [Google Drive](https://drive.google.com/drive/folders/1VZO4YAlFP1xegt1BvoKUMDOY_9Nm3p-b?usp=sharing)
