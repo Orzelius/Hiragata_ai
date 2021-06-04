@@ -8,7 +8,11 @@ The AI model that is used in [hiragata.com](https://hiragata.com/).
 1. Clone the repo
 2. Change working directory to the repo root (`cd Hiragata_ai`)
 3. Download some model-ready data from [Google Drive](https://drive.google.com/file/d/13nL7qlIiph2Ok4lOz5mcxD5KC__8jozf/view?usp=sharing)
-4. Extract data to `data/bin/`
+4. Extract data to `data/bin/` (Final result should be something like `data/bin/48x48/binary_files_located_here`)
+5. Install npm packages `npm ci` (It's fine if tfjs build fails as you won't need it if you're only working with data. Most of tfjs will still work as it will fallback to the js version if you don't have the GPU stuff working)
+6. Create dir for test-images `mkdir test-images`
+7. Run `npm run init-data` to create some images into `/test-images` and test if everything works
+8. Great success!
 
 Reguirements:
 The hardware and software requirements are the same as regular tensorflow. You can use [this](https://www.tensorflow.org/install/gpu#hardware_requirements) quide to get deps working.
