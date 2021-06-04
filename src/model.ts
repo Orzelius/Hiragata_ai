@@ -69,7 +69,7 @@ const createModel = () => {
 
   model.compile({
     optimizer: 'adam',
-    loss: 'sparseCategoricalCrossentropy',
+    loss: 'categoricalCrossentropy',
     metrics: ['accuracy'],
   });
   console.log('Model compiled');
@@ -96,7 +96,7 @@ const train = async () => {
 
   // We'll keep a buffer of loss and accuracy values over time.
   let trainBatchCount = 0;
-  let trainEpochs = 15;
+  let trainEpochs = 100;
 
   let trainData = data.getTrainData();
   let testData = data.getTestData();
@@ -117,7 +117,7 @@ const train = async () => {
   await model.fit(trainData.xs, trainData.labels, {
     epochs: trainEpochs,
     validationSplit,
-    // batchSize,
+    batchSize,
     // validationSplit,
     callbacks: {
       onBatchEnd: async (batch, logs) => {
