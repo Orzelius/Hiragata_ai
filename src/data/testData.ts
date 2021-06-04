@@ -3,29 +3,24 @@ import path from 'path';
 import { PNG } from 'pngjs';
 import { PROPS } from '../const';
 
-const originImg = './data/data/bin_48/katakanaTestUint8';
-const originLabel = './data/data/bin_48/katakanaTestLabelsUint8';
-// const originImg = './data/data/hiraganaUint8';
-// const originLabel = './data/data/hiraganaLabelsUint8';
 const dest = './test-images';
 
 export default async () => {
   console.log("Creating test data");
   
   deleteFiles(dest);
-  const imagesTotest = [0, 1, 40, 50, 240, 300, 458];
-  // const imagesTotest = [0, 1, 22, 498, 499, 500, 501, 999, 1000, 9999, 64998, 64999];
+  // const imagesTotest = [0, 1, 40, 50, 240, 300, 458];
   // await createImages('mnist_images.png', imagesTotest, '_Original');
-  await createImages(imagesTotest);
+  await createImages(PROPS.locations.test.data, PROPS.locations.test.labels, "_test_data");
+  await createImages(PROPS.locations.training.data, PROPS.locations.training.labels, "_train_data");
 }
 
-export const createImages = async (imagesTotest: number[], addToName = "") => {
-  console.log('Creating images');
-
+export const createImages = async (originImg: string, originLabel: string, appendToName = "") => {
   const imgData = await dataRequest(originImg);
   const labelData = await dataRequest(originLabel);
-
-  console.log(labelData, imgData.length)
+  
+  const imagesTotest = [0, 1, labelData.length - 1];
+  console.log(`First 20 labels of ${originLabel}`, labelData.slice(0, 20), `Byte size of ${originLabel}`, imgData.length);
 
   imagesTotest.forEach(id => {
     const testPng = new PNG({
@@ -47,7 +42,7 @@ export const createImages = async (imagesTotest: number[], addToName = "") => {
     }
     testPng
       .pack()
-      .pipe(fs.createWriteStream(`./${dest}/id-${id}_label-${PROPS.classes[labelData[id]].kat + PROPS.classes[labelData[id]].hir}${addToName}.png`));
+      .pipe(fs.createWriteStream(`./${dest}/id-${id}_label-${PROPS.classes[labelData[id]].kat + PROPS.classes[labelData[id]].hir}${appendToName}.png`));
   });
 }
 

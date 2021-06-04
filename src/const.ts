@@ -52,6 +52,16 @@ const props = {
   Size: 0,
   NumClasses: classes.length,
   classes,
+  locations: {
+    test: {
+      labels: './data/bin/48x48/katakanaTestLabelsUint8',
+      data: './data/bin/48x48/katakanaTestUint8',
+    },
+    training: {
+      labels: './data/bin/48x48/katakanaLabelsUint8',
+      data: './data/bin/48x48/katakanaUint8',
+    },
+  }
 }
 
 props.Size = props.W * props.H;

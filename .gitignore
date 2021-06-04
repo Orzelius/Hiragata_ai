@@ -9,7 +9,11 @@ lerna-debug.log*
 old_for_reference
 data/data
 data/notModified
-test-images
+data/images/*
+test-images/**.*
+data/bin/*
+!data/bin/48x48
+data/bin/48x48/*
 out
 
 # Diagnostic reports (https://nodejs.org/api/report.html)

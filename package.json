@@ -4,7 +4,8 @@
     "description": "",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "bnr": "ts-node src/index.ts"
+        "bnr": "ts-node src/index.ts",
+        "init-data": "ts-node src/scripts/initData.ts"
     },
     "keywords": [],
     "author": "",

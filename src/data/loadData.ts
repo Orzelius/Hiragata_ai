@@ -6,12 +6,6 @@ import * as fs from 'graceful-fs';
 import { PROPS } from '../const';
 import { shuffle } from '../utils';
 
-const
-  originLabel     = './data/data/bin_48/katakanaLabelsUint8',
-  originImg       = './data/data/bin_48/katakanaUint8',
-  originTestImg   = './data/data/bin_48/katakanaTestUint8',
-  originTestLabel = './data/data/bin_48/katakanaTestLabelsUint8';
-
 export default class DataGen {
   trainImages: Float32Array;
   testImages: Float32Array;
@@ -23,7 +17,7 @@ export default class DataGen {
     testImages: Float32Array[]
   } = {trainImages: [], testImages: []}
 
-  constructor(readonly brain: boolean) { }
+  constructor(readonly createBrainJsData: boolean) { }
 
   shuffle() {
     tf.util.shuffleCombo(this.trainImages, this.trainLabels as unknown as any[]);
@@ -42,7 +36,7 @@ export default class DataGen {
         for (let i = 0; i < images.length; i++) {
           imageData[i] = images[i] / 255;
         }
-        if (!this.brain){
+        if (!this.createBrainJsData){
           resolve(imageData)
           return;  
         };
@@ -62,14 +56,14 @@ export default class DataGen {
       });
     });
 
-    this.trainLabels = await labelsRequest(originLabel)
-    this.testLabels = await labelsRequest(originTestLabel)
-    if (this.brain) {
-      this.brainData.trainImages = await dataRequest(originImg);
-      this.brainData.testImages = await dataRequest(originTestImg);
+    this.trainLabels = await labelsRequest(PROPS.locations.training.labels)
+    this.testLabels = await labelsRequest(PROPS.locations.test.labels)
+    if (this.createBrainJsData) {
+      this.brainData.trainImages = await dataRequest(PROPS.locations.training.data);
+      this.brainData.testImages = await dataRequest(PROPS.locations.test.data);
     } else {
-      this.trainImages = await dataRequest(originImg);
-      this.testImages = await dataRequest(originTestImg);
+      this.trainImages = await dataRequest(PROPS.locations.training.data);
+      this.testImages = await dataRequest(PROPS.locations.test.data);
     }
 
     console.log("Done editing and loading images");
