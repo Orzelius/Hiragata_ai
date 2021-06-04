@@ -5,6 +5,7 @@ The AI model that is used in [hiragata.com](https://hiragata.com/).
 ## Dev guide
 
 ### I want to work with the data only (no model training)
+
 1. Clone the repo
 2. Change working directory to the repo root (`cd Hiragata_ai`)
 3. Download some model-ready data from [Google Drive](https://drive.google.com/file/d/13nL7qlIiph2Ok4lOz5mcxD5KC__8jozf/view?usp=sharing)
@@ -13,6 +14,10 @@ The AI model that is used in [hiragata.com](https://hiragata.com/).
 6. Create dir for test-images `mkdir test-images`
 7. Run `npm run init-data` to create some images into `/test-images` and test if everything works
 8. Great success!
+
+### I want to work with the model
+
+NOTE: everything will work with the js-node version of tfjs, but if you want to greatly accelerate the learning you could try to get the GPU stuff working
 
 Reguirements:
 The hardware and software requirements are the same as regular tensorflow. You can use [this](https://www.tensorflow.org/install/gpu#hardware_requirements) quide to get deps working.
