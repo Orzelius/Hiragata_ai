@@ -22,7 +22,7 @@ export default (dataGen: DataGen) => {
   brainData = _.shuffle(brainData); // { input: Float32Array; output: (0 | 1)[]; }[]
   console.log("Data initalized")
   const net = new brain.NeuralNetworkGPU();
-  net.train(brainData, {
+  net.train(brainData.slice(0, 2000), {
     iterations,
     logPeriod,
     log: logAndEstimate,
