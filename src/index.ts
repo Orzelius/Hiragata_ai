@@ -24,8 +24,10 @@ import testBrain from "./testBrain";
 //   console.log(testData.labels);
 //   console.log(testData.xs);  
 // })
-makeModel();
-// testModel(458);
+(async () => {
+  await makeModel();
+  await testModel(458);
+})();
 // (async () => {
 //   const dataGen = new DataGen(true);
 //   await dataGen.load();

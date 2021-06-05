@@ -163,11 +163,9 @@ export const testModel = async (amount: number, path: string = 'file://./model/m
 const makeModel = async () => {
   console.log("Loading data...");
   await data.load()
-    .then(async () => {
-      console.log("Data loaded")
-      await train()
-      await model.save('file://./model/')
-    })
+  console.log("Data loaded")
+  await train()
+  await model.save('file://./model/')
 }
 
 
