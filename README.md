@@ -2,7 +2,12 @@
 
 The AI model that is used in [hiragata.com](https://hiragata.com/).
 
-**This repo is part of the Hiragata project**
+**This repo is part of the Hiragata project** Links to other parts of the project:
+| Repo | Description |
+| ------------- | ------------- |
+| [Hiragata](https://github.com/Orzelius/Hiragata) | React based front-end |
+| [test-hiragata-ai](https://github.com/Orzelius/test-hiragata-ai) | AI model testing and visualization react based FE |
+| [japanese-fonts-dataset](https://github.com/Orzelius/japanese-fonts-dataset)  | Source for a small font-based dataset |
 
 ## Dev guide
 
@@ -32,6 +37,7 @@ The hardware and software requirements are the same as regular tensorflow. You c
 | [cuDNN SDK](https://developer.nvidia.com/rdp/cudnn-download)  | >=7.4.1 but not 8 |
 
 Install packages only after ^
+
 If you get C build errors on windows consult [tfjs doc](https://github.com/tensorflow/tfjs/blob/master/tfjs-node/WINDOWS_TROUBLESHOOTING.md#msbuildexe-exceptions)
  
 if you get gpu allocation err try running
@@ -40,4 +46,5 @@ if you get gpu allocation err try running
 ## Data
 
 TODO: document this section
+
 The model-ready data can be found from [Google Drive](https://drive.google.com/drive/folders/1VZO4YAlFP1xegt1BvoKUMDOY_9Nm3p-b?usp=sharing)
