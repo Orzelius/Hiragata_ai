@@ -118,6 +118,7 @@ const train = async () => {
     epochs: trainEpochs,
     validationSplit,
     batchSize,
+    shuffle: true,
     // validationSplit,
     callbacks: {
       onBatchEnd: async (batch, logs) => {
