@@ -3,6 +3,7 @@ import { PROPS } from '../const';
 import { PNG } from 'pngjs';
 import { printProgress, shuffle } from '../utils';
 import async from 'async';
+import _ from 'lodash';
 
 
 
@@ -12,11 +13,13 @@ export default async () => {
   
     const useFileLimit = false;
     const fileLimit = { limitLen: 50000, takeLast: true };
+    const shuffle = true; // This will randonly shuffle the data
     let count = 0;
     
     const origin = './data/data/katakanaTestData_48/';
     const dest = './data/data/bin_48/';
     fs.readdir(origin, (err, files) => {
+      files = _.shuffle(files);
       const maxFiles = useFileLimit ? fileLimit.limitLen : files.length;
       const datasetBytesBuffer = new ArrayBuffer(maxFiles * PROPS.Size);
       const labels = new Uint8Array(maxFiles);
